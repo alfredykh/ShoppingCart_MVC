@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@using _13AShopCart.Controllers;
+@using _13AShopCart.Models;
+@using System.Web.MVC;
+
+
+
+<h2>Products</h2>
+<p></p>
+<p></p>
+
+<div align="right">
+    <a href="/Cart/Index">
+        <img src="Content/Icons/Cart.jpg" width="25" height="25" alt="Index" />
+    </a>
+</div>
+
+@{
+    List<Product> products = (List<Product>)ViewData["products"];
+    double itemCount = (double)ViewData["itemCount"];
+    double rows = (double)ViewData["rows"];
+    string sessionId = (string)ViewData["sessionId"];
+    int? cartId = (int?)ViewData["cartId"];
+}
+    
+
+    @model _13AShopCart.Models.Product
+
+    <div>
+        @using (Html.BeginForm("Index", "Gallery", FormMethod.Post))
+        {
+            <table>
+                <tr>
+                    <td>@Html.TextBoxFor(x => x.Name, new { style = "width: 1000px;" })</td>
+                    <td colspan="2" align="right"><input type="submit" value="Search" placeholder="Search" /></td>
+
+                </tr>
+            </table>
+        }
+    </div>
+
+    <div>
+        <table>
+            @for (int i = 1; i <= rows; i++)
+            {
+                int k = (i - 1) * 3;
+                <tr>
+                    @for (int j = k; j < (k + 3); j++)
+                    {
+                        <td>
+                            @if (j < itemCount)
+                            {
+                                <div id="1">
+                                    <p align="center"><img width="100" height="100" src="@products[j].ImageURL" /></p>
+                                    <p align="center" style="font-weight: bold">@products[j].Name</p>
+                                    <p aligh="left">@products[j].Description</p>
+                                    <p align="center">$@products[j].Price.00</p>
+                                    <p align="center">@Html.ActionLink("Add to Cart", "Add", "Gallery", new { productId = products[j].Id, cartId = cartId, sessionId = sessionId }, new { @class = "btn btn-primary", @style = "color:white" })</p>
+                                </div>
+                            }
+
+                            else
+                            { break; }
+                        </td>
+                    }
+                </tr>
+            }
+
+        </table>
+        <input type="hidden" value="@sessionId" /><input type="hidden" value="@cartId" />
+        @*<p>session Guid: @ViewData["sessionId"]</p> *@
+        @*<p>.NET session ID: @Session["browserSession"].ToString()</p>*@
+
+        <style>
+            tr, td {
+                padding: 15px
+            }
+        </style>
+
+
+    </div>

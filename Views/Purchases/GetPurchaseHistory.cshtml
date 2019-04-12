@@ -1,0 +1,80 @@
+﻿@using _13AShopCart.Models
+
+<p></p>
+@{
+    ViewBag.Title = "PurchaseHistory";
+
+}
+
+@*{var sessionId = ViewData["sessionId"];
+            var user = (User)ViewData{["user"];
+    var purchases = (List<Purchase>
+    )ViewData["purchases"]; }*@
+
+
+
+    
+
+    <h2 align="left">My Purchase</h2>
+
+    <p align="center">&nbsp;<br /><br /></p>
+    @{
+        var sessionId = ViewData["sessionId"];
+        var results = (List<Purchase>)ViewData["purchases"];
+    }
+
+
+
+
+
+    @foreach (var result in ViewData["purchases"] as List<Purchase>)
+    {
+        <table>
+
+            <tr>
+                <td width=" 350px " align="center" rowspan="2"><img src=@result.Image style="width:100px;height:100px"></td>
+                <td width="550px" height="50px">Purchased On: @result.Date</td>
+
+            </tr>
+
+            <tr>
+
+                <td width="550px">Quantity: @result.Qty</td>
+
+            </tr>
+
+            <tr>
+                <td width=" 350px " align="center"><b>@result.Name</b></td>
+
+                <td width="550px">
+                    Activation Code:
+                    @if (result.Qty > 1)
+                    {
+                        string code = result.ActivationCode;
+                        var words = code.Split(',').ToList();
+
+                        var selectItemList = new List<SelectListItem>();
+
+                        var selectList = new SelectList(words, "ActivationCode");
+                        selectItemList.AddRange(selectList);
+                        ViewBag.database = selectItemList;
+
+                        @Html.DropDownList("database-dropdownlist", ViewBag.database as IEnumerable<SelectListItem>, new { @class = "btn btn-success dropdown-toggle form-control" }) }
+
+                    else
+                    { @result.Code}
+                </td>
+
+
+            </tr>
+            <tr>
+                <td width=" 350px ">@result.Description</td>
+
+            </tr>
+            <tr>
+                <td width=" 350px"><a href="@result.URL">@result.URL</a></td>
+
+            </tr>
+        </table>
+    }
+        <input type="hidden" , value="@sessionId" />

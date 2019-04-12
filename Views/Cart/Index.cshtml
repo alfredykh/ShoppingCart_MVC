@@ -1,0 +1,116 @@
+﻿
+@{
+	ViewBag.Title = "Index";
+}
+
+@using _13AShopCart.Models;
+
+<h2>ViewCart</h2>
+@{
+	ViewBag.Title = "ViewCart";
+}
+@{ var cartid = ViewData["cartId"];
+    
+    }
+@Html.ActionLink("Continue Shopping", "Index", "Gallery", new { cartID = cartid}, null)
+@Html.ActionLink("Check Out", "Checkout", new { cartID = cartid}, null) <br><br><br>
+
+@{
+	var items = (List<CartItem>)ViewData["Items"];
+	var i = 0; var j = 0;
+	var result = 0.0;
+	foreach (var item in items)
+	{
+		result += item.Price * item.Qty * 1;
+	}
+
+}
+
+<body onload="main()">
+	<table align="right">
+		<tr>
+			<td>Total $:
+			<td>
+			<td><div id="total_box">@result</div></td>
+		</tr>
+	</table>
+
+	<table>
+		@{
+			foreach (var item in items)
+			{
+
+				<tr>
+					<td><img width="100" height="100" src="@item.ImgUrl" /></td>
+					<td>
+						<p align="center">@item.ProductName</p>
+						<p align="center">@item.ProductDescription</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right"> Price : @item.Price</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right"> Qty : <input id=@item.ProductId type="number" min="0" value="@item.Qty"></td>
+				</tr>
+			}
+		}
+	</table>
+
+</body>
+<script type="text/javascript">
+	function main()
+	{ 
+		var total_box, qty, price, total;
+		
+
+		@foreach (var item in items)
+		{
+			<text>
+		var qty_box = document.getElementById("@item.ProductId");
+	   
+			qty_box.addEventListener("click", function (event)
+			{
+				event.preventDefault();
+
+				total_box = document.getElementById("total_box");
+				qty = parseInt(document.getElementById("@item.ProductId").value);
+				@*price = @item.Price;
+				total = price * qty;
+				total_box.innerHTML = total;*@
+				UpdateQty(@item.ProductId, qty);
+				total = recalculateTotalAmount();
+				total_box.innerHTML = total;
+		});
+		 </text>
+		}
+	}
+	function recalculateTotalAmount()
+	{
+		@{result = 0.0; }
+		@foreach(var item in items)
+		{
+			result += item.Price * item.Qty * 1;
+		}
+		return total;
+	}
+
+	function UpdateQty(productid, q)
+	{
+		var httpReq = new XMLHttpRequest();
+		httpReq.onreadystatechange = function () {
+			if (this.readyState == 4 && this.status == 200) {
+				Console.log("Http Connection is Successful");
+			}
+		}
+		httpReq.open("Post", "Cart/UpdateQty?cartID="+@cartid+"&pid="+productid+"&qty=" + q,true);
+		httpReq.send();
+	}
+</script>
+<style>
+
+	td, tr {
+		padding: 2px;
+	}
+</style>
+
